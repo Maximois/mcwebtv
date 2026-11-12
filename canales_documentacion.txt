@@ -1,0 +1,134 @@
+DOCUMENTACIÓN DE CANALES Y LÓGICA ACTUAL
+======================================
+
+Resumen
+-------
+La aplicación presenta canales en filas de cuatro elementos. Los canales se
+construyen en MainFragment y se muestran con el navegador interno BrowserActivity,
+excepto las categorías que tienen un módulo de navegación propio. Los canales
+remotos se agregan al inicio de la lista. Los eventos se muestran en una fila
+separada con el encabezado "Eventos".
+
+Modelo de canal
+---------------
+Movie contiene los datos usados por la interfaz y la navegación:
+- title: nombre del canal.
+- videoUrl: URL o recurso de reproducción.
+- cardImageUrl: URL o recurso para la imagen.
+- category: categoría que selecciona el módulo de navegación.
+- referer: referer HTTP opcional para WebView.
+- userAgent: user-agent opcional para WebView.
+
+Canales integrados
+------------------
+
+1. DeparaguayModule
+- Categoría: DESDEPARAGUAY.
+- Canal: Venusmedia.
+- URL: https://www.desdeparaguay.com/external/?venusmedia
+- Navegación: BrowserActivity con la URL directa.
+
+2. DesdepylabsModule
+- Categoría: DESDEPYLABS.
+- Telefuturo: https://www.desdepylabs.com/External/tvaccion/telefuturo
+- La Tele: https://www.desdepylabs.com/External/tvaccion/latele
+- Npy: https://www.desdepylabs.com/External/tvaccion/npy
+- Navegación: BrowserActivity con la URL del canal. Telefuturo tiene lógica
+	especial de reproducción descrita en la sección BrowserActivity.
+
+3. SntHlsModule
+- Categoría: SNT HLS.
+- Canal: SNT HLS.
+- URL: https://d3epa8orr2qy3m.cloudfront.net/ts:abr.m3u8
+- Navegación: BrowserActivity; las URLs HLS se muestran mediante una página
+	HTML interna que utiliza hls.js.
+
+4. GentvModule
+- Categoría: GEN TV.
+- Canal: Gen TV.
+- URL: https://gentv.desdepylabs.com/External/gentv
+- Referer: https://www.gen.com.py/
+- Navegación: BrowserActivity con el referer indicado.
+
+5. ParaguayHlsModule
+- Categoría: Paraguay TV.
+- Canal: Paraguay TV.
+- URL: https://stream.paraguaytv.gov.py/memfs/bbe36fed-9b49-4d1d-adaa-4bd6d1b2e386.m3u8
+- Navegación: BrowserActivity; stream HLS.
+
+Canales adicionales
+-------------------
+
+C9N
+- Categoría: C9N.
+- URL: https://d174axghh54kh0.cloudfront.net/ts:abr.m3u8
+- Navegación: BrowserActivity; stream HLS.
+
+ABCTV
+- Categoría: PARAGUAY_EXTRA.
+- URL: https://geo.dailymotion.com/player/x1b1gw.html?video=kQRS6ZAjGuMkByE4Mtc&autoplay=1&mute=1
+- Referer: https://www.abc.com.py/tv/
+- Navegación: BrowserActivity con referer.
+
+Trece
+- Categoría: PARAGUAY_EXTRA.
+- URL: https://geo.dailymotion.com/player/x1at3a.html?video=k1bgQZHbBKPqXOHczd4&autoplay=1&mute=1
+- Referer: https://trece.com.py/
+- Navegación: BrowserActivity con referer.
+
+Unicanal
+- Categoría: PARAGUAY_EXTRA.
+- URL: https://geo.dailymotion.com/player/x1apn6.html?video=k41tDnJts45CTVHcyD4&autoplay=1&mute=1
+- Referer: https://unicanal.com.py/
+- Navegación: BrowserActivity con referer.
+
+Canales y eventos remotos
+-------------------------
+MainFragment convierte la configuración remota en objetos Movie, conservando
+title, videoUrl, cardImageUrl, category, referer y userAgent. Si falta la imagen,
+usa res://drawable/ic_logo; si falta la categoría de un canal, usa
+PARAGUAY_EXTRA. Los canales remotos aparecen antes de los canales integrados.
+
+Los eventos remotos se muestran aparte bajo "Eventos" y se abren con BrowserActivity
+marcados como eventos. Sus datos también pueden incluir referer y userAgent. Si no
+hay eventos configurados, la interfaz muestra cuatro elementos de marcador.
+
+La configuración remota se sirve desde:
+https://raw.githubusercontent.com/Maximois/mcwebtv/main/webtv-config.json
+El archivo de configuración editable está en la raíz del repositorio. Si la
+descarga falla, la app usa app/src/main/assets/default_config.json.
+
+BrowserActivity
+---------------
+- Acepta URL, referer, userAgent y una marca para eventos.
+- Aplica el userAgent a WebView cuando se proporciona y envía el referer como
+	encabezado al cargar una página web.
+- Si la URL contiene .m3u8, genera una página HTML interna con un elemento video
+	y hls.js, que inicia la reproducción cuando se analiza el manifiesto.
+- Permite reproducción multimedia sin requerir gesto del usuario en WebView y
+	acepta cookies de terceros.
+- Muestra el banner de carga de MC TV mientras carga la página. El texto cambia
+	para eventos; el banner se oculta al terminar la carga o al detectarse
+	reproducción, según la ruta.
+- Para Telefuturo intenta iniciar el reproductor Video.js/IMA, desmutearlo y
+	reproducirlo, con acciones adicionales programadas a 1.5 y 3.5 segundos.
+- Para páginas cuya URL contiene "dailymotion", programa a los 2.5 segundos una
+	acción que busca un elemento video, activa muted, autoplay y playsInline,
+	solicita su reproducción y envía un toque al WebView.
+
+Nota sobre Dailymotion
+---------------------
+La lógica descrita se activa por la URL cargada que contiene "dailymotion", no
+por una comprobación explícita de los identificadores de ABCTV, Trece y Unicanal.
+Por eso, si se requiere limitar estrictamente el comportamiento a esos canales,
+conviene cambiar la condición para comprobar sus URLs o un identificador de canal.
+El toque simulado desde la aplicación tampoco equivale necesariamente a un gesto
+del usuario reconocido por las políticas de reproducción del navegador.
+
+Flujo de navegación
+-------------------
+MainFragment despacha las categorías DESDEPARAGUAY, DESDEPYLABS, SNT HLS,
+GEN TV y Paraguay TV a sus módulos correspondientes. Eventos llaman a
+BrowserActivity con la marca de evento. Las demás categorías usan
+BrowserActivity con URL, referer y userAgent disponibles.
+

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background">#0D0D14</color>
+    <color name="background_gradient_start">#0D0D14</color>
+    <color name="background_gradient_end">#16161F</color>
+    <color name="card_surface">#1A1A26</color>
+    <color name="card_surface_focused">#24243A</color>
+    <color name="card_info_area">#12121C</color>
+    <color name="accent">#00D4FF</color>
+    <color name="accent_warm">#FFB347</color>
+    <color name="text_primary">#F0F0F5</color>
+    <color name="text_secondary">#8888A0</color>
+    <color name="shadow_glow">#4000D4FF</color>
+</resources>

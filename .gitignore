@@ -1,0 +1,25 @@
+# Local Android SDK configuration
+local.properties
+
+# Gradle and Kotlin caches
+.gradle/
+.kotlin/
+**/build/
+
+# Android build outputs and native intermediates
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Android Studio / IntelliJ project files
+.idea/
+*.iml
+
+# Local machine and operating-system files
+.DS_Store
+Thumbs.db
+
+# Signing material and local environment secrets
+*.jks
+*.keystore
+secrets.properties

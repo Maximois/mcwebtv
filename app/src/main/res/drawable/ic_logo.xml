@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Fondo del círculo -->
+    <path
+        android:fillColor="#1A1A26"
+        android:pathData="M48,4C23.7,4 4,23.7 4,48s19.7,44 44,44 44,-19.7 44,-44S72.3,4 48,4z"/>
+    <!-- Borde del círculo con el acento -->
+    <path
+        android:fillColor="#00D4FF"
+        android:pathData="M48,8C26,8 8,26 8,48s18,40 40,40 40,-18 40,-40S70,8 48,8zM48,84C28.1,84 12,67.9 12,48S28.1,12 48,12s36,16.1 36,36 -16.1,36 -36,36z"/>
+    <!-- Icono de play triangular -->
+    <path
+        android:fillColor="#00D4FF"
+        android:pathData="M40,34l22,14 -22,14z"/>
+</vector>
